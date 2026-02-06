@@ -1,0 +1,37 @@
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow">
+                <div class="card-header bg-primary text-white">
+                    <h4 class="mb-0">Login</h4>
+                </div>
+                <div class="card-body">
+                    <div class="form-group mb-3">
+                        <label for="username" class="form-label">Username or Email</label>
+                        <input #txtUsernameOrEmail type="text" class="form-control" id="username" placeholder="Enter your username or email">
+                    </div>
+                    <div class="form-group mb-3">
+                        <label for="password" class="form-label">Password</label>
+                        <input #txtPassword type="password" class="form-control" id="password" placeholder="Enter your password">
+                    </div>
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-primary" (click)="login(txtUsernameOrEmail.value, txtPassword.value)">Login</button>
+                    </div>
+                    
+                    <div class="mt-3 text-center">
+                        <p>Don't have an account? <a routerLink="/register">Register now</a></p>
+                    </div>
+                    
+                    <hr>
+                    <div class="text-center">
+                        <p class="text-muted">Or login with:</p>
+                        <div class="d-flex justify-content-center gap-3">
+                            <asl-google-signin-button></asl-google-signin-button>
+                            <img src="../../../../assets/facebook.png" style="width: 40px; height: 40px; cursor: pointer;" (click)="facebookLogin()" alt="Facebook Login"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

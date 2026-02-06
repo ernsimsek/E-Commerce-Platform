@@ -1,0 +1,149 @@
+<div class="container-fluid p-0">
+  <div mat-dialog-title class="bg-primary text-white py-3 px-4 mb-0 d-flex justify-content-between align-items-center">
+    <h2 class="mb-0">Ürün Resim Yönetimi</h2>
+    <button mat-icon-button color="warn" mat-dialog-close>
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <mat-dialog-content class="mat-typography p-0">
+    <div class="p-4 border-bottom">
+      <h3 class="mb-3">Yeni Resim Yükle</h3>
+      <app-file-upload [options]="options" (uploadComplete)="onFilesUploaded()"></app-file-upload>
+      <div class="mt-2 text-muted small">
+        <strong>Not:</strong> Sadece .png, .jpg, .jpeg ve .gif formatındaki dosyalar kabul edilmektedir. Maksimum dosya boyutu: 5MB.
+      </div>
+    </div>
+
+    <div class="p-4" *ngIf="images && images.length > 0">
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 class="mb-0">Ürün Resimleri ({{images.length}})</h3>
+        <div>
+          <button mat-raised-button color="accent" (click)="refreshImages()">
+            <mat-icon>refresh</mat-icon> Yenile
+          </button>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-4 mb-4" *ngFor="let image of images">
+          <mat-card class="h-100 product-image-card" [ngClass]="{'showcase-card': image?.showcase}">
+            <mat-card-header>
+              <mat-card-title class="d-flex justify-content-between align-items-center">
+                <div class="text-truncate" [matTooltip]="'ID: ' + (image?.id || 'Bilinmiyor')">Resim #{{image?.id ? image.id.substring(0, 6) : 'Yeni'}}</div>
+                <mat-checkbox [checked]="image?.showcase" (change)="showCase(image?.id ?? '')" 
+                              color="primary" matTooltip="Vitrin resmi olarak ayarla">
+                  Vitrin
+                </mat-checkbox>
+              </mat-card-title>
+            </mat-card-header>
+            
+            <div class="image-container">
+              <ng-container *ngIf="image && image.fileName && image.fileName.length > 0; else defaultImage">
+                <img [src]="'https://localhost:7136/api/Files/photo-image/' + image.fileName" 
+                    [alt]="'Ürün resmi ' + (image.id || '')" 
+                    class="product-image"
+                    (error)="onImageError($event)">
+              </ng-container>
+              <ng-template #defaultImage>
+                <img src="../../../../../assets/default-product.png" 
+                     class="product-image" 
+                     alt="Varsayılan Ürün Resmi"
+                     (error)="onImageError($event)">
+              </ng-template>
+              <div class="image-overlay" *ngIf="image && image.showcase">
+                <span class="badge bg-success">Vitrin Resmi</span>
+              </div>
+            </div>
+            
+            <mat-card-actions class="d-flex justify-content-between">
+              <ng-container *ngIf="image && image.fileName && image.fileName.length > 0; else defaultLink">
+                <a mat-button [href]="'https://localhost:7136/api/Files/photo-image/' + image.fileName" 
+                   target="_blank" color="primary">
+                  <mat-icon>open_in_new</mat-icon> Tam Boyut
+                </a>
+              </ng-container>
+              <ng-template #defaultLink>
+                <a mat-button href="../../../../../assets/default-product.png" target="_blank" color="primary">
+                  <mat-icon>open_in_new</mat-icon> Varsayılan Görüntü
+                </a>
+              </ng-template>
+              <button mat-button color="warn" (click)="deleteImage(image?.id ?? '', $event)" [disabled]="!image?.id">
+                <mat-icon>delete</mat-icon> Sil
+              </button>
+            </mat-card-actions>
+          </mat-card>
+        </div>
+      </div>
+    </div>
+
+    <div class="p-4 text-center" *ngIf="!images || images.length === 0">
+      <div class="alert alert-warning">
+        <mat-icon>warning</mat-icon> Ürüne ait resim bulunamadı
+      </div>
+      <div class="empty-state">
+        <mat-icon class="empty-icon">image_not_supported</mat-icon>
+        <h3>Resim Bulunamadı</h3>
+        <p>Bu ürüne ait hiç resim bulunmamaktadır. Yukarıdaki yükleme bölümünü kullanarak resim ekleyebilirsiniz.</p>
+      </div>
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end" class="p-3 border-top">
+    <button mat-raised-button color="primary" mat-dialog-close>Tamam</button>
+  </mat-dialog-actions>
+</div>
+
+<style>
+  .product-image-card {
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+    position: relative;
+  }
+  
+  .product-image-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+  }
+  
+  .showcase-card {
+    border: 2px solid #4caf50;
+  }
+  
+  .image-container {
+    height: 200px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #f5f5f5;
+    position: relative;
+  }
+  
+  .image-overlay {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 5px;
+  }
+  
+  .product-image {
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
+  }
+  
+  .empty-icon {
+    font-size: 64px;
+    height: 64px;
+    width: 64px;
+    color: #ccc;
+    margin-bottom: 16px;
+  }
+  
+  .empty-state {
+    padding: 32px;
+  }
+</style>
+
+

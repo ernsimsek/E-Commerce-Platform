@@ -1,0 +1,178 @@
+<div class="product-list-container">
+  <!-- Üst kontrol paneli -->
+  <div class="filter-bar bg-light p-3 rounded mb-4">
+    <div class="container-fluid">
+      <div class="row g-3 align-items-center">
+        <div class="col-md-3">
+          <div class="filter-group">
+            <label for="categoryFilter" class="form-label mb-1 small text-muted">Kategori</label>
+            <select class="form-select form-select-sm" id="categoryFilter">
+              <option value="" selected>Tüm Kategoriler</option>
+              <option value="1">Elektronik</option>
+              <option value="2">Moda</option>
+              <option value="3">Ev & Yaşam</option>
+              <option value="4">Spor & Outdoor</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="filter-group">
+            <label for="priceFilter" class="form-label mb-1 small text-muted">Fiyat Aralığı</label>
+            <select class="form-select form-select-sm" id="priceFilter">
+              <option value="" selected>Tüm Fiyatlar</option>
+              <option value="0-100">0₺ - 100₺</option>
+              <option value="100-500">100₺ - 500₺</option>
+              <option value="500-1000">500₺ - 1000₺</option>
+              <option value="1000+">1000₺ ve üzeri</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="filter-group">
+            <label for="sortOrder" class="form-label mb-1 small text-muted">Sıralama</label>
+            <select class="form-select form-select-sm" id="sortOrder">
+              <option value="newest" selected>En Yeniler</option>
+              <option value="price-asc">Fiyat (Artan)</option>
+              <option value="price-desc">Fiyat (Azalan)</option>
+              <option value="name-asc">İsim (A-Z)</option>
+              <option value="name-desc">İsim (Z-A)</option>
+            </select>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <div class="d-flex flex-column">
+            <label class="form-label mb-1 small text-muted">Görünüm</label>
+            <div class="btn-group">
+              <button type="button" class="btn btn-sm btn-outline-secondary active">
+                <i class="fa-solid fa-grip"></i>
+              </button>
+              <button type="button" class="btn btn-sm btn-outline-secondary">
+                <i class="fa-solid fa-list"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <div class="container-fluid">
+    <!-- Aktif filtreler -->
+    <div class="active-filters mb-3" *ngIf="false">
+      <span class="small text-muted me-2">Aktif Filtreler:</span>
+      <span class="badge bg-light text-dark border me-1 px-3 py-2">
+        Elektronik <i class="fa-solid fa-times-circle ms-1 cursor-pointer"></i>
+      </span>
+      <span class="badge bg-light text-dark border me-1 px-3 py-2">
+        500₺ - 1000₺ <i class="fa-solid fa-times-circle ms-1 cursor-pointer"></i>
+      </span>
+      <button class="btn btn-sm btn-link text-danger">Filtreleri Temizle</button>
+    </div>
+
+    <!-- Toplam ürün sayısı -->
+    <div class="mb-3 text-muted small">
+      Toplam {{products.length || 0}} ürün listeleniyor
+    </div>
+
+    <!-- Ürün Grid Görünümü -->
+    <div class="row g-4">
+      <div class="col-6 col-md-4 col-lg-3 col-xl-2 mb-4" *ngFor="let product of products;">
+        <div class="card product-card h-100 shadow-sm hover-shadow">
+          <div class="position-relative product-image-container">
+            <div class="product-badge-container">
+              <span class="badge bg-danger position-absolute top-0 start-0 m-2" *ngIf="false">Yeni</span>
+              <span class="badge bg-success position-absolute top-0 start-0 m-2" *ngIf="false">-%10</span>
+            </div>
+            <!-- Güvenli resim gösterimi - null ve undefined kontrolü-->
+            <ng-container *ngIf="product && product.productImageFiles && product.productImageFiles.length && product.productImageFiles[0]; else defaultImage">
+              <!-- Önce vitrin resmini ara, yoksa ilk resmi göster -->
+              <ng-container *ngIf="getShowcaseImage(product) as showcaseUrl; else firstProductImage">
+                <img 
+                    [src]="showcaseUrl" 
+                    class="card-img-top product-img" 
+                    alt="{{product.name}}"
+                    (error)="onImageError($event)">
+              </ng-container>
+              <ng-template #firstProductImage>
+                <img 
+                    [src]="'https://localhost:7136/api/Files/photo-image/' + product.productImageFiles[0].fileName" 
+                    class="card-img-top product-img" 
+                    alt="{{product.name}}"
+                    (error)="onImageError($event)">
+              </ng-template>
+            </ng-container>
+            <ng-template #defaultImage>
+              <img src="../../../../../assets/default-product.png" class="card-img-top product-img" alt="{{product?.name || 'Ürün'}}">
+            </ng-template>
+            
+            <div class="product-actions position-absolute top-0 end-0 m-2">
+              <button class="btn btn-light btn-sm rounded-circle shadow-sm mb-2" title="Favorilere Ekle">
+                <i class="fa-regular fa-heart"></i>
+              </button>
+              <button class="btn btn-light btn-sm rounded-circle shadow-sm" title="Hızlı Bakış">
+                <i class="fa-regular fa-eye"></i>
+              </button>
+            </div>
+          </div>
+          
+          <div class="card-body d-flex flex-column">
+            <h5 class="card-title product-title text-truncate" title="{{product.name}}">{{product.name}}</h5>
+            
+            <div class="product-rating mb-2" *ngIf="false">
+              <i class="fa-solid fa-star text-warning"></i>
+              <i class="fa-solid fa-star text-warning"></i>
+              <i class="fa-solid fa-star text-warning"></i>
+              <i class="fa-solid fa-star text-warning"></i>
+              <i class="fa-regular fa-star text-warning"></i>
+              <span class="rating-count ms-2 text-muted">(16)</span>
+            </div>
+            
+            <p class="card-text product-price mb-3">
+              <span class="text-decoration-line-through text-muted me-2" *ngIf="false">{{product.price * 1.2 | currency:'₺'}}</span>
+              <span [ngClass]="{'fw-bold': true, 'text-danger': false}">{{product.price | currency:'₺'}}</span>
+            </p>
+            
+            <div class="stock-status mb-2 small">
+              <span class="text-success" *ngIf="product.stock > 10"><i class="fa-solid fa-check-circle me-1"></i> Stokta</span>
+              <span class="text-warning" *ngIf="product.stock > 0 && product.stock <= 10"><i class="fa-solid fa-exclamation-circle me-1"></i> Son {{product.stock}} ürün</span>
+              <span class="text-danger" *ngIf="product.stock === 0"><i class="fa-solid fa-times-circle me-1"></i> Tükendi</span>
+            </div>
+            
+            <button class="btn btn-primary w-100 mt-auto" [disabled]="product.stock === 0">
+              <i class="fa-solid fa-cart-plus me-2"></i>Sepete Ekle
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Sayfalama -->
+    <div class="row mt-5">
+      <div class="col-md-12 d-flex justify-content-center">
+        <nav aria-label="Ürün sayfaları">
+          <ul class="pagination">
+            <li class="page-item" [class.disabled]="currentPageNo <= 1">
+              <a class="page-link" [routerLink]="['/products', currentPageNo-1<=0 ? 1 : currentPageNo - 1]" aria-label="Önceki">
+                <span aria-hidden="true"><i class="fa-solid fa-chevron-left"></i></span>
+                <span class="visually-hidden">Önceki</span>
+              </a>
+            </li>
+            
+            <li class="page-item" *ngFor="let pageNo of pageList;" [class.active]="pageNo === currentPageNo">
+              <a class="page-link" [routerLink]="['/products', pageNo]">
+                {{pageNo}}
+              </a>
+            </li>
+            
+            <li class="page-item" [class.disabled]="currentPageNo >= totalPageCount">
+              <a class="page-link" [routerLink]="['/products', currentPageNo + 1 >= totalPageCount ? totalPageCount : currentPageNo + 1]" aria-label="Sonraki">
+                <span aria-hidden="true"><i class="fa-solid fa-chevron-right"></i></span>
+                <span class="visually-hidden">Sonraki</span>
+              </a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </div>
+</div>

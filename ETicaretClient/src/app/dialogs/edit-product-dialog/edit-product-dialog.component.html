@@ -1,0 +1,63 @@
+<div class="dialog-container">
+  <div class="dialog-title">
+    <span>Ürün Düzenle</span>
+    <button mat-icon-button class="close-button" (click)="cancel()">
+      <mat-icon>close</mat-icon>
+    </button>
+  </div>
+
+  <form [formGroup]="productForm" (ngSubmit)="onSubmit()" class="dialog-form">
+    
+    <!-- Product Name Field -->
+    <mat-form-field appearance="outline" class="form-field">
+      <mat-label>Ürün Adı</mat-label>
+      <mat-icon matPrefix>inventory_2</mat-icon>
+      <input matInput formControlName="name" placeholder="Ürün adını giriniz">
+      <mat-error *ngIf="f['name'].hasError('required')">
+        Ürün adı gereklidir
+      </mat-error>
+      <mat-error *ngIf="f['name'].hasError('minlength')">
+        Ürün adı en az 3 karakter olmalıdır
+      </mat-error>
+      <mat-error *ngIf="f['name'].hasError('maxlength')">
+        Ürün adı en fazla 100 karakter olmalıdır
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Price Field -->
+    <mat-form-field appearance="outline" class="form-field">
+      <mat-label>Fiyat</mat-label>
+      <mat-icon matPrefix>attach_money</mat-icon>
+      <input matInput type="number" min="0.01" step="0.01" formControlName="price" placeholder="Ürün fiyatını giriniz">
+      <span matSuffix class="currency-symbol">₺</span>
+      <mat-error *ngIf="f['price'].hasError('required')">
+        Fiyat gereklidir
+      </mat-error>
+      <mat-error *ngIf="f['price'].hasError('min')">
+        Fiyat en az 0.01 olmalıdır
+      </mat-error>
+    </mat-form-field>
+
+    <!-- Stock Field -->
+    <mat-form-field appearance="outline" class="form-field">
+      <mat-label>Stok</mat-label>
+      <mat-icon matPrefix>warehouse</mat-icon>
+      <input matInput type="number" min="0" step="1" formControlName="stock" placeholder="Stok miktarını giriniz">
+      <mat-hint align="start">Stok miktarı 0 veya daha fazla olmalıdır</mat-hint>
+      <mat-error *ngIf="f['stock'].hasError('required')">
+        Stok gereklidir
+      </mat-error>
+      <mat-error *ngIf="f['stock'].hasError('min')">
+        Stok en az 0 olmalıdır
+      </mat-error>
+    </mat-form-field>
+
+    <div class="dialog-actions">
+      <button mat-button type="button" (click)="cancel()">İptal</button>
+      <button mat-raised-button color="primary" type="submit" [disabled]="productForm.invalid">
+        <mat-icon>save</mat-icon>
+        Güncelle
+      </button>
+    </div>
+  </form>
+</div> 

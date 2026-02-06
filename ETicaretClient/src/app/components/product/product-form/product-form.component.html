@@ -1,0 +1,118 @@
+<div class="container">
+  <div class="row mb-4">
+    <div class="col">
+      <h2>{{ isEditMode ? 'Edit' : 'Create' }} Product</h2>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-8">
+      <div *ngIf="loading$ | async" class="text-center">
+        <div class="spinner-border" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
+
+      <div *ngIf="error$ | async as error" class="alert alert-danger">
+        {{ error }}
+      </div>
+
+      <form [formGroup]="productForm" (ngSubmit)="onSubmit()" *ngIf="!loading$ | async">
+        <div class="mb-3">
+          <label for="name" class="form-label">Name</label>
+          <input
+            type="text"
+            class="form-control"
+            id="name"
+            formControlName="name"
+            [class.is-invalid]="productForm.get('name')?.invalid && productForm.get('name')?.touched"
+          >
+          <div class="invalid-feedback" *ngIf="productForm.get('name')?.errors?.['required']">
+            Name is required
+          </div>
+          <div class="invalid-feedback" *ngIf="productForm.get('name')?.errors?.['maxlength']">
+            Name cannot exceed 100 characters
+          </div>
+        </div>
+
+        <div class="row mb-3">
+          <div class="col-md-8">
+            <label for="price" class="form-label">Price</label>
+            <input
+              type="number"
+              class="form-control"
+              id="price"
+              formControlName="price"
+              [class.is-invalid]="productForm.get('price')?.invalid && productForm.get('price')?.touched"
+            >
+            <div class="invalid-feedback" *ngIf="productForm.get('price')?.errors?.['required']">
+              Price is required
+            </div>
+            <div class="invalid-feedback" *ngIf="productForm.get('price')?.errors?.['min']">
+              Price must be greater than 0
+            </div>
+          </div>
+          <div class="col-md-4">
+            <label for="currency" class="form-label">Currency</label>
+            <select
+              class="form-select"
+              id="currency"
+              formControlName="currency"
+              [class.is-invalid]="productForm.get('currency')?.invalid && productForm.get('currency')?.touched"
+            >
+              <option value="USD">USD</option>
+              <option value="EUR">EUR</option>
+              <option value="GBP">GBP</option>
+            </select>
+            <div class="invalid-feedback" *ngIf="productForm.get('currency')?.errors?.['required']">
+              Currency is required
+            </div>
+            <div class="invalid-feedback" *ngIf="productForm.get('currency')?.errors?.['pattern']">
+              Invalid currency format
+            </div>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="stock" class="form-label">Stock</label>
+          <input
+            type="number"
+            class="form-control"
+            id="stock"
+            formControlName="stock"
+            [class.is-invalid]="productForm.get('stock')?.invalid && productForm.get('stock')?.touched"
+          >
+          <div class="invalid-feedback" *ngIf="productForm.get('stock')?.errors?.['required']">
+            Stock is required
+          </div>
+          <div class="invalid-feedback" *ngIf="productForm.get('stock')?.errors?.['min']">
+            Stock must be greater than or equal to 0
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label for="description" class="form-label">Description</label>
+          <textarea
+            class="form-control"
+            id="description"
+            rows="3"
+            formControlName="description"
+            [class.is-invalid]="productForm.get('description')?.invalid && productForm.get('description')?.touched"
+          ></textarea>
+          <div class="invalid-feedback" *ngIf="productForm.get('description')?.errors?.['maxlength']">
+            Description cannot exceed 500 characters
+          </div>
+        </div>
+
+        <div class="d-flex gap-2">
+          <button type="submit" class="btn btn-primary" [disabled]="productForm.invalid">
+            {{ isEditMode ? 'Update' : 'Create' }}
+          </button>
+          <button type="button" class="btn btn-secondary" (click)="onCancel()">
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div> 

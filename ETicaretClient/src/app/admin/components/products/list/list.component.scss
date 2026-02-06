@@ -1,0 +1,74 @@
+table {
+    width: 100%;
+  }
+  
+.bg-light-hover {
+  transition: background-color 0.3s;
+  
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.05);
+    cursor: pointer;
+  }
+}
+
+.text-danger {
+  color: #dc3545 !important;
+}
+
+.text-warning {
+  color: #ffc107 !important;
+}
+
+.text-success {
+  color: #28a745 !important;
+}
+
+.loading-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+}
+
+.spinner-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.table-responsive {
+  position: relative;
+  overflow: auto;
+  min-height: 400px;
+}
+
+::ng-deep .mat-sort-header-container {
+  justify-content: center;
+}
+
+::ng-deep th.mat-header-cell {
+  text-align: center;
+  font-weight: bold;
+  color: #495057;
+}
+
+::ng-deep td.mat-cell {
+  text-align: center;
+}
+
+// Kolon başlıklarının hover ve aktif durumları için stil
+::ng-deep .mat-sort-header-arrow {
+  color: #007bff;
+}
+
+::ng-deep .mat-sort-header-sorted .mat-sort-header-arrow {
+  opacity: 1 !important;
+  transform: none !important;
+}
+  

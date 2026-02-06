@@ -1,0 +1,167 @@
+<div class="card shadow-sm">
+  <div class="card-header bg-light py-2">
+    <div class="d-flex justify-content-between align-items-center">
+      <h5 class="mb-0 text-primary">Ürün Listesi</h5>
+      <div class="d-flex align-items-center">
+        <mat-form-field appearance="outline" class="m-0" style="width: 250px;">
+          <mat-label>Ürün ara</mat-label>
+          <input matInput placeholder="İsim, kategori veya açıklama..." #searchInput (keyup)="applyFilter(searchInput.value)">
+          <mat-icon matSuffix>search</mat-icon>
+        </mat-form-field>
+      </div>
+    </div>
+  </div>
+  <div class="card-body p-0">
+    <div class="table-responsive">
+      <table mat-table [dataSource]="dataSource" class="w-100" matSort matSortActive="name" matSortDirection="asc">
+        <!-- Name Column -->
+        <ng-container matColumnDef="name">
+          <th mat-header-cell *matHeaderCellDef class="bg-light fw-bold" mat-sort-header> Ürün Adı </th>
+          <td mat-cell *matCellDef="let element"> 
+            <div class="d-flex align-items-center py-1">
+              <!-- İmaj gösterimi - komponent metodları kullanarak -->
+              <ng-container *ngIf="hasImages(element); else defaultImage">
+                <!-- Admin panelinde en son eklenen resmi göster -->
+                <img [src]="getLatestImageUrl(element)" 
+                     class="me-2 rounded border" 
+                     style="width: 40px; height: 40px; object-fit: cover;"
+                     (error)="onImageError($event)">
+              </ng-container>
+              <ng-template #defaultImage>
+                <img src="../../../../../assets/default-product.png" 
+                     class="me-2 rounded border" 
+                     style="width: 40px; height: 40px; object-fit: cover;">
+              </ng-template>
+              <strong>{{element.name}}</strong>
+            </div>
+          </td>
+        </ng-container>
+
+        <!-- Stock Column -->
+        <ng-container matColumnDef="stock">
+          <th mat-header-cell *matHeaderCellDef class="bg-light fw-bold" mat-sort-header> Stok </th>
+          <td mat-cell *matCellDef="let element"> 
+            <span class="badge rounded-pill" [ngClass]="{
+              'bg-danger': element.stock <= 10,
+              'bg-warning text-dark': element.stock > 10 && element.stock <= 30,
+              'bg-success': element.stock > 30
+            }">
+              {{element.stock}}
+            </span>
+          </td>
+        </ng-container>
+
+        <!-- Price Column -->
+        <ng-container matColumnDef="price">
+          <th mat-header-cell *matHeaderCellDef class="bg-light fw-bold" mat-sort-header> Fiyat </th>
+          <td mat-cell *matCellDef="let element"> 
+            <span class="fw-bold">₺{{element.price | number:'1.2-2'}}</span>
+          </td>
+        </ng-container>
+
+        <!-- Created Date Column -->
+        <ng-container matColumnDef="createdDate">
+          <th mat-header-cell *matHeaderCellDef class="bg-light fw-bold" mat-sort-header> Oluşturma Tarihi </th>
+          <td mat-cell *matCellDef="let element"> {{element.createdDate | date:'dd/MM/yyyy HH:mm'}} </td>
+        </ng-container>
+
+        <!-- Updated Date Column -->
+        <ng-container matColumnDef="updatedDate">
+          <th mat-header-cell *matHeaderCellDef class="bg-light fw-bold" mat-sort-header> Güncelleme Tarihi </th>
+          <td mat-cell *matCellDef="let element"> {{element.updatedDate | date:'dd/MM/yyyy HH:mm'}} </td>
+        </ng-container>
+
+        <!-- Actions Column - Tek bir kolon olarak birleştirilmiş -->
+        <ng-container matColumnDef="photos">
+          <th mat-header-cell *matHeaderCellDef class="bg-light fw-bold text-center"> İşlemler </th>
+          <td mat-cell *matCellDef="let element" class="text-center">
+            <div class="btn-group">
+              <button mat-icon-button color="primary" (click)="addProductsImage(element.id)" matTooltip="Resimler">
+                <mat-icon>photo_library</mat-icon>
+              </button>
+              <button mat-icon-button color="accent" (click)="editProduct(element)" matTooltip="Düzenle">
+                <mat-icon>edit</mat-icon>
+              </button>
+              <button mat-icon-button color="warn" 
+                appDelete
+                [id]="element.id"
+                (callback)="refreshProducts()"
+                controller="products" 
+                matTooltip="Sil">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="['name', 'stock', 'price', 'createdDate', 'updatedDate', 'photos']"></tr>
+        <tr mat-row *matRowDef="let row; columns: ['name', 'stock', 'price', 'createdDate', 'updatedDate', 'photos'];" 
+            class="hover-row"></tr>
+
+        <!-- Row shown when there is no matching data. -->
+        <tr class="mat-row" *matNoDataRow>
+          <td class="mat-cell text-center py-4" colspan="6">
+            <div class="d-flex flex-column align-items-center">
+              <mat-icon class="text-muted" style="font-size: 48px; height: 48px; width: 48px;">inventory_2</mat-icon>
+              <p class="text-muted mt-2">Arama kriterlerinize uygun ürün bulunamadı</p>
+            </div>
+          </td>
+        </tr>
+      </table>
+      
+      <!-- Yükleniyor göstergesi -->
+      <div *ngIf="isLoadingResults" class="loading-overlay">
+        <div class="spinner-container">
+          <mat-spinner diameter="50"></mat-spinner>
+        </div>
+      </div>
+    </div>
+
+    <mat-paginator 
+                  [pageIndex]="0"
+                  [pageSize]="5"
+                  [pageSizeOptions]="[5, 10, 25, 100]"
+                  [length]="totalProductCount"
+                  [showFirstLastButtons]="true"
+                  aria-label="Ürünler için sayfa seçin">
+    </mat-paginator>
+  </div>
+</div>
+
+<style>
+  /* Özel stil tanımlamaları */
+  .hover-row:hover {
+    background-color: rgba(0, 0, 0, 0.04);
+    cursor: pointer;
+  }
+  .mat-mdc-header-cell {
+    font-weight: bold !important;
+  }
+  .mat-column-name {
+    width: 30%;
+    padding-left: 8px;
+  }
+  .mat-column-stock, .mat-column-price {
+    width: 10%;
+    text-align: center;
+  }
+  .mat-column-createdDate, .mat-column-updatedDate {
+    width: 20%;
+    text-align: center;
+  }
+  .mat-column-photos {
+    width: 10%;
+  }
+  .loading-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(255, 255, 255, 0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+</style>

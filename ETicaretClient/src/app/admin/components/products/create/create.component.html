@@ -1,0 +1,62 @@
+<form [formGroup]="productForm" (ngSubmit)="createProduct()">
+  <div class="mb-2">
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>Ürün Adı</mat-label>
+      <input matInput formControlName="name" placeholder="Ürün adı girin">
+      <mat-icon matSuffix>inventory_2</mat-icon>
+      <mat-error *ngIf="productForm.get('name')?.hasError('required')">
+        Zorunlu alan
+      </mat-error>
+    </mat-form-field>
+  </div>
+
+  <div class="row mb-2 g-2">
+    <div class="col-6">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Stok</mat-label>
+        <input matInput type="number" formControlName="stock" min="0">
+        <mat-icon matSuffix>warehouse</mat-icon>
+      </mat-form-field>
+    </div>
+    <div class="col-6">
+      <mat-form-field appearance="outline" class="w-100">
+        <mat-label>Fiyat</mat-label>
+        <input matInput type="number" formControlName="price" min="0">
+        <span matPrefix>₺&nbsp;</span>
+      </mat-form-field>
+    </div>
+  </div>
+
+  <div class="mb-2">
+    <mat-form-field appearance="outline" class="w-100">
+      <mat-label>Kategori</mat-label>
+      <mat-select formControlName="type">
+        <mat-option value="Electronics">Elektronik</mat-option>
+        <mat-option value="Computer Component">Bilgisayar Bileşeni</mat-option>
+        <mat-option value="Sound System">Ses Sistemi</mat-option>
+        <mat-option value="Smart Device">Akıllı Cihaz</mat-option>
+        <mat-option value="Computer Peripheral">Bilgisayar Çevre Birimi</mat-option>
+        <mat-option value="Storage">Depolama</mat-option>
+        <mat-option value="Network Equipment">Ağ Ekipmanı</mat-option>
+      </mat-select>
+      <mat-icon matSuffix>category</mat-icon>
+    </mat-form-field>
+  </div>
+
+  <div class="d-flex justify-content-between align-items-center mt-2">
+    <button type="button" mat-icon-button color="warn" (click)="resetForm()" matTooltip="Formu Sıfırla">
+      <mat-icon>refresh</mat-icon>
+    </button>
+    <button type="submit" mat-raised-button color="primary" [disabled]="productForm.invalid || isSubmitting">
+      <mat-icon>add_circle</mat-icon> Ürün Oluştur
+    </button>
+  </div>
+</form>
+
+<div *ngIf="successMessage || errorMessage" class="alert mt-2 py-1 px-2 small" 
+     [ngClass]="{'alert-success': successMessage, 'alert-danger': errorMessage}">
+  <strong>{{successMessage ? 'Başarılı!' : 'Hata!'}}</strong> 
+  {{successMessage || errorMessage}}
+  <button type="button" class="btn-close btn-sm float-end" style="padding: 0.25rem;"
+          (click)="clearMessage()"></button>
+</div>

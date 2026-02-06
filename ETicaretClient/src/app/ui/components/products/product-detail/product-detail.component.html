@@ -1,0 +1,458 @@
+<div class="product-detail-page py-5">
+  <div class="container-fluid px-md-5" *ngIf="product">
+    <!-- Üst Navigasyon -->
+    <nav aria-label="breadcrumb" class="mb-4">
+      <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a routerLink="/">Ana Sayfa</a></li>
+        <li class="breadcrumb-item"><a routerLink="/products">Ürünler</a></li>
+        <li class="breadcrumb-item active" aria-current="page">{{product.name}}</li>
+      </ol>
+    </nav>
+
+    <!-- Ürün Detay Ana Bölüm -->
+    <div class="row mb-5">
+      <!-- Sol Taraf - Resimler -->
+      <div class="col-lg-6 mb-4 mb-lg-0">
+        <div class="product-images">
+          <div class="row">
+            <div class="col-md-2 d-none d-md-block">
+              <!-- Küçük Resimler (Thumbnail) -->
+              <div class="small-images mb-2" *ngFor="let image of productImages; let i = index">
+                <img [src]="image" class="img-thumbnail cursor-pointer" 
+                     [class.active]="selectedImageIndex === i" 
+                     (click)="selectImage(i)" 
+                     [alt]="product.name + ' ' + (i+1)">
+              </div>
+            </div>
+            <div class="col-md-10">
+              <!-- Ana Resim -->
+              <div class="main-image position-relative mb-3">
+                <span class="badge bg-danger position-absolute top-0 start-0 m-3" *ngIf="product.isNew">YENİ</span>
+                <span class="badge bg-success position-absolute top-0 start-0 m-3" *ngIf="product.discount">%{{product.discount}} İNDİRİM</span>
+                <span class="badge bg-warning position-absolute top-0 end-0 m-3" *ngIf="product.isBestseller">Çok Satan</span>
+                
+                <div class="image-wrapper">
+                  <img [src]="productImages[selectedImageIndex]" class="img-fluid rounded" [alt]="product.name">
+                </div>
+                
+                <div class="zoom-controls position-absolute bottom-0 end-0 m-3">
+                  <button class="btn btn-sm btn-light rounded-circle shadow-sm" title="Yakınlaştır">
+                    <i class="fa-solid fa-search-plus"></i>
+                  </button>
+                </div>
+              </div>
+              
+              <!-- Mobil için küçük resimler -->
+              <div class="small-images-mobile d-flex d-md-none mb-3">
+                <div class="small-image-item mx-1" *ngFor="let image of productImages; let i = index">
+                  <img [src]="image" class="img-thumbnail cursor-pointer" 
+                       [class.active]="selectedImageIndex === i" 
+                       (click)="selectImage(i)" 
+                       [alt]="product.name + ' ' + (i+1)" style="width: 60px; height: 60px; object-fit: cover;">
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sağ Taraf - Ürün Bilgileri -->
+      <div class="col-lg-6">
+        <div class="product-info">
+          <!-- Ürün Başlık -->
+          <h1 class="product-title h3 mb-2">{{product.name}}</h1>
+          
+          <!-- Değerlendirme -->
+          <div class="product-rating mb-3">
+            <span *ngFor="let i of [1, 2, 3, 4, 5]">
+              <i class="fa-solid fa-star" [class.text-warning]="i <= product.rating" [class.text-muted]="i > product.rating"></i>
+            </span>
+            <span class="ms-2 text-muted">({{product.reviewCount}} değerlendirme)</span>
+          </div>
+          
+          <!-- Marka Bilgisi -->
+          <div class="product-brand mb-3">
+            <span class="text-muted">Marka:</span> <strong>{{product.specifications.brand}}</strong>
+          </div>
+          
+          <!-- Fiyat -->
+          <div class="product-price mb-3">
+            <span class="text-decoration-line-through text-muted me-2" *ngIf="product.discount">{{product.price | currency:'₺'}}</span>
+            <span class="h3 fw-bold text-primary mb-0">{{product.discountedPrice | currency:'₺'}}</span>
+            <span class="badge bg-danger ms-2" *ngIf="product.discount">%{{product.discount}} İndirim</span>
+          </div>
+          
+          <!-- Stok Durumu -->
+          <div class="product-stock mb-3">
+            <span class="badge" [class.bg-success]="product.isInStock" [class.bg-danger]="!product.isInStock">
+              <i class="fa-solid" [class.fa-check-circle]="product.isInStock" [class.fa-times-circle]="!product.isInStock"></i>
+              {{product.isInStock ? 'Stokta' : 'Tükendi'}}
+            </span>
+            <span class="text-muted ms-2" *ngIf="product.isInStock">Stok: {{product.stock}} Adet</span>
+          </div>
+          
+          <!-- Hızlı Özellikler -->
+          <div class="quick-specs mb-4">
+            <div class="row g-2">
+              <div class="col-6 col-md-4">
+                <div class="spec-item p-2 rounded bg-light text-center">
+                  <small class="d-block text-muted mb-1">Model</small>
+                  <strong>{{product.specifications.model}}</strong>
+                </div>
+              </div>
+              <div class="col-6 col-md-4">
+                <div class="spec-item p-2 rounded bg-light text-center">
+                  <small class="d-block text-muted mb-1">Renk</small>
+                  <strong>{{product.specifications.color}}</strong>
+                </div>
+              </div>
+              <div class="col-6 col-md-4">
+                <div class="spec-item p-2 rounded bg-light text-center">
+                  <small class="d-block text-muted mb-1">Depolama</small>
+                  <strong>{{product.specifications.storage}}</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Miktar -->
+          <div class="product-quantity mb-4">
+            <div class="row align-items-center">
+              <div class="col-md-4">
+                <label for="quantity" class="form-label">Adet</label>
+                <div class="input-group">
+                  <button class="btn btn-outline-secondary" type="button" (click)="decrementQuantity()">-</button>
+                  <input type="number" class="form-control text-center" id="quantity" [(ngModel)]="quantity" min="1" [max]="product.stock">
+                  <button class="btn btn-outline-secondary" type="button" (click)="incrementQuantity()">+</button>
+                </div>
+              </div>
+              <div class="col-md-8 mt-3 mt-md-0">
+                <!-- Sepete Ekle -->
+                <button class="btn btn-primary btn-lg w-100" (click)="addToCart()" [disabled]="!product.isInStock">
+                  <i class="fa-solid fa-cart-plus me-2"></i>Sepete Ekle
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Hızlı İşlemler -->
+          <div class="quick-actions mb-4">
+            <div class="row g-2">
+              <div class="col-6">
+                <button class="btn btn-outline-secondary w-100" (click)="addToFavorites()">
+                  <i class="fa-regular fa-heart me-2"></i>Favorilere Ekle
+                </button>
+              </div>
+              <div class="col-6">
+                <button class="btn btn-outline-secondary w-100">
+                  <i class="fa-solid fa-share-alt me-2"></i>Paylaş
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Ödeme Seçenekleri -->
+          <div class="payment-options p-3 bg-light rounded mb-4">
+            <h5 class="mb-3">Ödeme Seçenekleri</h5>
+            <div class="row g-2">
+              <div class="col-md-6">
+                <div class="card border-0 shadow-sm h-100">
+                  <div class="card-body p-2">
+                    <div class="d-flex align-items-center">
+                      <i class="fa-solid fa-credit-card text-primary me-2"></i>
+                      <div>
+                        <small class="d-block text-muted">Kredi Kartı</small>
+                        <div>9 Taksit İmkanı</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <div class="card border-0 shadow-sm h-100">
+                  <div class="card-body p-2">
+                    <div class="d-flex align-items-center">
+                      <i class="fa-solid fa-truck-fast text-success me-2"></i>
+                      <div>
+                        <small class="d-block text-muted">Kargo</small>
+                        <div>Ücretsiz Kargo</div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Güvenli Alışveriş -->
+          <div class="secure-shopping d-flex justify-content-start mb-4">
+            <div class="d-flex align-items-center me-4">
+              <i class="fa-solid fa-shield-alt text-success me-2"></i>
+              <span>Güvenli Ödeme</span>
+            </div>
+            <div class="d-flex align-items-center me-4">
+              <i class="fa-solid fa-box-open text-success me-2"></i>
+              <span>Kolay İade</span>
+            </div>
+            <div class="d-flex align-items-center">
+              <i class="fa-solid fa-check-circle text-success me-2"></i>
+              <span>Orijinal Ürün</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Ürün Detayları ve Sekmeleri -->
+    <div class="product-tabs mb-5">
+      <ul class="nav nav-tabs" id="productTab" role="tablist">
+        <li class="nav-item" role="presentation">
+          <button class="nav-link active" id="description-tab" data-bs-toggle="tab" data-bs-target="#description" type="button" role="tab" aria-controls="description" aria-selected="true">Ürün Açıklaması</button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="specs-tab" data-bs-toggle="tab" data-bs-target="#specs" type="button" role="tab" aria-controls="specs" aria-selected="false">Teknik Özellikler</button>
+        </li>
+        <li class="nav-item" role="presentation">
+          <button class="nav-link" id="reviews-tab" data-bs-toggle="tab" data-bs-target="#reviews" type="button" role="tab" aria-controls="reviews" aria-selected="false">Değerlendirmeler ({{product.reviewCount}})</button>
+        </li>
+      </ul>
+      <div class="tab-content pt-4" id="productTabContent">
+        <!-- Açıklama Sekmesi -->
+        <div class="tab-pane fade show active" id="description" role="tabpanel" aria-labelledby="description-tab">
+          <div class="row">
+            <div class="col-md-8">
+              <h4>Ürün Açıklaması</h4>
+              <p class="mb-4">{{product.description}}</p>
+
+              <h5>Özellikler</h5>
+              <ul class="features-list mb-4">
+                <li *ngFor="let feature of product.features" class="mb-2">
+                  <i class="fa-solid fa-check text-success me-2"></i>
+                  {{feature}}
+                </li>
+              </ul>
+            </div>
+            <div class="col-md-4 d-none d-md-block">
+              <div class="card border-0 shadow-sm">
+                <div class="card-body">
+                  <h5 class="card-title">Neden {{product.specifications.brand}}?</h5>
+                  <p class="card-text">{{product.specifications.brand}} ürünleri, yüksek kalite ve performans sunar. Kullanıcı deneyimini en üst seviyeye çıkaran teknolojik yeniliklerle donatılmıştır.</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <!-- Teknik Özellikler Sekmesi -->
+        <div class="tab-pane fade" id="specs" role="tabpanel" aria-labelledby="specs-tab">
+          <h4>Teknik Özellikler</h4>
+          <div class="table-responsive">
+            <table class="table table-striped">
+              <tbody>
+                <tr>
+                  <th style="width: 30%">Marka</th>
+                  <td>{{product.specifications.brand}}</td>
+                </tr>
+                <tr>
+                  <th>Model</th>
+                  <td>{{product.specifications.model}}</td>
+                </tr>
+                <tr>
+                  <th>Çıkış Yılı</th>
+                  <td>{{product.specifications.releaseYear}}</td>
+                </tr>
+                <tr>
+                  <th>Renk</th>
+                  <td>{{product.specifications.color}}</td>
+                </tr>
+                <tr>
+                  <th>Depolama</th>
+                  <td>{{product.specifications.storage}}</td>
+                </tr>
+                <tr>
+                  <th>İşlemci</th>
+                  <td>{{product.specifications.processor}}</td>
+                </tr>
+                <tr>
+                  <th>RAM</th>
+                  <td>{{product.specifications.ram}}</td>
+                </tr>
+                <tr>
+                  <th>Kamera</th>
+                  <td>{{product.specifications.camera}}</td>
+                </tr>
+                <tr>
+                  <th>Batarya Kapasitesi</th>
+                  <td>{{product.specifications.batteryCapacity}}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+        
+        <!-- Değerlendirmeler Sekmesi -->
+        <div class="tab-pane fade" id="reviews" role="tabpanel" aria-labelledby="reviews-tab">
+          <div class="row">
+            <div class="col-md-4 mb-4 mb-md-0">
+              <div class="reviews-summary">
+                <h4 class="mb-3">Müşteri Değerlendirmeleri</h4>
+                <div class="overall-rating mb-4">
+                  <div class="rating-score display-4 fw-bold text-primary">{{product.rating}}</div>
+                  <div class="rating-stars">
+                    <i class="fa-solid fa-star text-warning" *ngFor="let i of [1, 2, 3, 4, 5]"
+                       [class.fa-star-half-alt]="i > product.rating && i - 0.5 <= product.rating"
+                       [class.fa-regular]="i > product.rating && i - 0.5 > product.rating"></i>
+                  </div>
+                  <div class="rating-count text-muted mt-1">{{product.reviewCount}} değerlendirme</div>
+                </div>
+                
+                <div class="rating-bars">
+                  <div class="rating-bar mb-2">
+                    <div class="d-flex justify-content-between mb-1">
+                      <span>5 Yıldız</span>
+                      <span>75%</span>
+                    </div>
+                    <div class="progress" style="height: 10px;">
+                      <div class="progress-bar bg-success" role="progressbar" style="width: 75%"></div>
+                    </div>
+                  </div>
+                  <div class="rating-bar mb-2">
+                    <div class="d-flex justify-content-between mb-1">
+                      <span>4 Yıldız</span>
+                      <span>18%</span>
+                    </div>
+                    <div class="progress" style="height: 10px;">
+                      <div class="progress-bar bg-success" role="progressbar" style="width: 18%"></div>
+                    </div>
+                  </div>
+                  <div class="rating-bar mb-2">
+                    <div class="d-flex justify-content-between mb-1">
+                      <span>3 Yıldız</span>
+                      <span>5%</span>
+                    </div>
+                    <div class="progress" style="height: 10px;">
+                      <div class="progress-bar bg-warning" role="progressbar" style="width: 5%"></div>
+                    </div>
+                  </div>
+                  <div class="rating-bar mb-2">
+                    <div class="d-flex justify-content-between mb-1">
+                      <span>2 Yıldız</span>
+                      <span>2%</span>
+                    </div>
+                    <div class="progress" style="height: 10px;">
+                      <div class="progress-bar bg-danger" role="progressbar" style="width: 2%"></div>
+                    </div>
+                  </div>
+                  <div class="rating-bar mb-2">
+                    <div class="d-flex justify-content-between mb-1">
+                      <span>1 Yıldız</span>
+                      <span>0%</span>
+                    </div>
+                    <div class="progress" style="height: 10px;">
+                      <div class="progress-bar bg-danger" role="progressbar" style="width: 0%"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="col-md-8">
+              <div class="reviews-list">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                  <h4 class="mb-0">Yorumlar</h4>
+                  <button class="btn btn-outline-primary">Değerlendirme Yap</button>
+                </div>
+                
+                <!-- Örnek Değerlendirmeler -->
+                <div class="review-item mb-4 p-3 border rounded">
+                  <div class="d-flex justify-content-between mb-2">
+                    <div class="reviewer-info">
+                      <h5 class="mb-0">Ahmet Y.</h5>
+                      <div class="review-date text-muted small">16 Nisan 2025</div>
+                    </div>
+                    <div class="review-rating">
+                      <i class="fa-solid fa-star text-warning" *ngFor="let i of [1, 2, 3, 4, 5]"></i>
+                    </div>
+                  </div>
+                  <h6 class="review-title fw-bold">Harika bir telefon!</h6>
+                  <p class="review-text mb-2">
+                    Daha önce kullandığım telefonlara göre çok daha hızlı ve performanslı. Kamera kalitesi inanılmaz. Pil ömrü de oldukça uzun, tam gün boyunca rahatça kullanabiliyorum.
+                  </p>
+                  <div class="review-pros-cons">
+                    <div class="pros mb-2">
+                      <span class="text-success me-2"><i class="fa-solid fa-plus-circle"></i> Artıları:</span>
+                      Kamera kalitesi, pil ömrü, ekran kalitesi
+                    </div>
+                    <div class="cons">
+                      <span class="text-danger me-2"><i class="fa-solid fa-minus-circle"></i> Eksileri:</span>
+                      Fiyatı biraz yüksek
+                    </div>
+                  </div>
+                </div>
+                
+                <div class="review-item mb-4 p-3 border rounded">
+                  <div class="d-flex justify-content-between mb-2">
+                    <div class="reviewer-info">
+                      <h5 class="mb-0">Zeynep K.</h5>
+                      <div class="review-date text-muted small">10 Nisan 2025</div>
+                    </div>
+                    <div class="review-rating">
+                      <i class="fa-solid fa-star text-warning" *ngFor="let i of [1, 2, 3, 4]"></i>
+                      <i class="fa-regular fa-star text-warning"></i>
+                    </div>
+                  </div>
+                  <h6 class="review-title fw-bold">Beklentilerimi karşıladı</h6>
+                  <p class="review-text mb-2">
+                    Genel olarak memnunum. Kamera kalitesi ve performansı çok iyi. Ancak pil ömrü beklediğim kadar uzun değil, yoğun kullanımda günü çıkarmakta zorlanıyor.
+                  </p>
+                  <div class="review-pros-cons">
+                    <div class="pros mb-2">
+                      <span class="text-success me-2"><i class="fa-solid fa-plus-circle"></i> Artıları:</span>
+                      Tasarım, kamera kalitesi, hız
+                    </div>
+                    <div class="cons">
+                      <span class="text-danger me-2"><i class="fa-solid fa-minus-circle"></i> Eksileri:</span>
+                      Pil ömrü, fiyat
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Daha Fazla Yorum -->
+                <button class="btn btn-outline-secondary w-100">Daha Fazla Yorum Yükle</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Benzer Ürünler -->
+    <div class="related-products">
+      <h3 class="section-title mb-4">Benzer Ürünler</h3>
+      <div class="row g-4">
+        <div class="col-md-3 mb-4" *ngFor="let product of relatedProducts">
+          <div class="card product-card h-100 shadow-sm hover-shadow">
+            <div class="position-relative">
+              <img src="assets/products/product{{product.id}}.jpg" class="card-img-top product-img" alt="{{product.name}}" 
+                   onError="this.src='../../../../../assets/default-product.png'">
+            </div>
+            <div class="card-body d-flex flex-column">
+              <h5 class="card-title product-title text-truncate" title="{{product.name}}">{{product.name}}</h5>
+              <p class="card-text product-price mb-3">
+                <span class="fw-bold">{{product.price | currency:'₺'}}</span>
+              </p>
+              <div class="stock-status mb-2 small">
+                <span class="text-success" *ngIf="product.stock > 10"><i class="fa-solid fa-check-circle me-1"></i> Stokta</span>
+                <span class="text-warning" *ngIf="product.stock > 0 && product.stock <= 10"><i class="fa-solid fa-exclamation-circle me-1"></i> Son {{product.stock}} ürün</span>
+                <span class="text-danger" *ngIf="product.stock === 0"><i class="fa-solid fa-times-circle me-1"></i> Tükendi</span>
+              </div>
+              <button class="btn btn-outline-primary w-100 mt-auto">
+                <i class="fa-solid fa-cart-plus me-2"></i>Sepete Ekle
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> 

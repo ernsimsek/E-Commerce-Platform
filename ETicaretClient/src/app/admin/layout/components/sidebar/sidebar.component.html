@@ -1,0 +1,79 @@
+<div class="admin-sidebar">
+  <!-- Logo and branding -->
+  <div class="sidebar-header py-4 text-center">
+    <h4 class="text-primary mb-0 fw-bold">E-Ticaret Admin</h4>
+    <div class="small text-muted">Yönetim Paneli</div>
+  </div>
+  
+  <!-- User profile area -->
+  <div class="sidebar-user py-3 px-3 mb-4 d-flex align-items-center">
+    <div class="avatar-container me-3">
+      <div class="avatar bg-primary text-white rounded-circle">
+        <span>AU</span>
+      </div>
+    </div>
+    <div class="user-info">
+      <h6 class="mb-0">Admin User</h6>
+      <div class="small text-muted">System Administrator</div>
+    </div>
+  </div>
+  
+  <!-- Navigation menu -->
+  <div class="sidebar-menu">
+    <ul class="nav flex-column">
+      <li class="nav-item mb-2">
+        <a class="nav-link d-flex align-items-center px-3 py-2" routerLink="/admin" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+          <i class="fa fa-tachometer-alt me-3"></i>
+          <span>Dashboard</span>
+        </a>
+      </li>
+      
+      <li class="nav-item mb-2">
+        <a class="nav-link d-flex align-items-center px-3 py-2" routerLink="/admin/products" routerLinkActive="active">
+          <i class="fa fa-boxes me-3"></i>
+          <span>Ürünler</span>
+        </a>
+      </li>
+      
+      <li class="nav-item mb-2">
+        <a class="nav-link d-flex align-items-center px-3 py-2" routerLink="/admin/orders" routerLinkActive="active">
+          <i class="fa fa-shopping-cart me-3"></i>
+          <span>Siparişler</span>
+        </a>
+      </li>
+      
+      <li class="nav-item mb-2">
+        <a class="nav-link d-flex align-items-center px-3 py-2" routerLink="/admin/customers" routerLinkActive="active">
+          <i class="fa fa-users me-3"></i>
+          <span>Müşteriler</span>
+        </a>
+      </li>
+      
+      <div class="sidebar-section-header px-3 py-2 mt-3 mb-2 text-uppercase small fw-bold text-muted">
+        Sistem
+      </div>
+      
+      <li class="nav-item mb-2">
+        <a class="nav-link d-flex align-items-center px-3 py-2" routerLink="/admin/settings" routerLinkActive="active">
+          <i class="fa fa-cog me-3"></i>
+          <span>Ayarlar</span>
+        </a>
+      </li>
+      
+      <li class="nav-item mb-2">
+        <a class="nav-link d-flex align-items-center px-3 py-2" routerLink="/" target="_blank">
+          <i class="fa fa-external-link-alt me-3"></i>
+          <span>Siteyi Görüntüle</span>
+        </a>
+      </li>
+      
+      <li class="nav-item mt-auto">
+        <a class="nav-link d-flex align-items-center px-3 py-2 text-danger" href="javascript:void(0)">
+          <i class="fa fa-sign-out-alt me-3"></i>
+          <span>Çıkış Yap</span>
+        </a>
+      </li>
+    </ul>
+  </div>
+</div>
+  

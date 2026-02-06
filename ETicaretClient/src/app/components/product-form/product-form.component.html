@@ -1,0 +1,118 @@
+<div class="container mt-4">
+  <div class="row">
+    <div class="col-md-8 offset-md-2">
+      <div class="card">
+        <div class="card-header">
+          <h2>{{ isEditMode ? 'Edit' : 'Create' }} Product</h2>
+        </div>
+        <div class="card-body">
+          <form [formGroup]="productForm" (ngSubmit)="onSubmit()">
+            <div class="mb-3">
+              <label for="name" class="form-label">Name</label>
+              <input type="text" class="form-control" id="name" formControlName="name"
+                     [class.is-invalid]="productForm.get('name')?.invalid && productForm.get('name')?.touched">
+              <div class="invalid-feedback" *ngIf="productForm.get('name')?.errors?.['required']">
+                Name is required
+              </div>
+              <div class="invalid-feedback" *ngIf="productForm.get('name')?.errors?.['minlength']">
+                Name must be at least 3 characters
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="description" class="form-label">Description</label>
+              <textarea class="form-control" id="description" rows="3" formControlName="description"
+                        [class.is-invalid]="productForm.get('description')?.invalid && productForm.get('description')?.touched"></textarea>
+              <div class="invalid-feedback" *ngIf="productForm.get('description')?.errors?.['required']">
+                Description is required
+              </div>
+              <div class="invalid-feedback" *ngIf="productForm.get('description')?.errors?.['minlength']">
+                Description must be at least 10 characters
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-8 mb-3">
+                <label for="price" class="form-label">Price</label>
+                <input type="number" class="form-control" id="price" formControlName="price"
+                       [class.is-invalid]="productForm.get('price')?.invalid && productForm.get('price')?.touched">
+                <div class="invalid-feedback" *ngIf="productForm.get('price')?.errors?.['required']">
+                  Price is required
+                </div>
+                <div class="invalid-feedback" *ngIf="productForm.get('price')?.errors?.['min']">
+                  Price must be greater than 0
+                </div>
+              </div>
+              
+              <div class="col-md-4 mb-3">
+                <label for="currency" class="form-label">Currency</label>
+                <select class="form-select" id="currency" formControlName="currency"
+                       [class.is-invalid]="productForm.get('currency')?.invalid && productForm.get('currency')?.touched">
+                  <option value="USD">USD</option>
+                  <option value="EUR">EUR</option>
+                  <option value="TRY">TRY</option>
+                </select>
+                <div class="invalid-feedback" *ngIf="productForm.get('currency')?.errors?.['required']">
+                  Currency is required
+                </div>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="pictureUrl" class="form-label">Product Image</label>
+              <div class="input-group">
+                <input type="file" class="form-control" id="pictureUrl" (change)="onFileSelected($event)" accept="image/*">
+              </div>
+              <div class="mt-2" *ngIf="selectedFile">
+                <small class="text-muted">Selected file: {{ selectedFile.name }}</small>
+              </div>
+              <div class="progress mt-2" *ngIf="uploadProgress > 0">
+                <div class="progress-bar" role="progressbar" [style.width.%]="uploadProgress" 
+                     [attr.aria-valuenow]="uploadProgress" aria-valuemin="0" aria-valuemax="100">
+                  {{ uploadProgress }}%
+                </div>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="brand" class="form-label">Brand</label>
+              <input type="text" class="form-control" id="brand" formControlName="brand"
+                     [class.is-invalid]="productForm.get('brand')?.invalid && productForm.get('brand')?.touched">
+              <div class="invalid-feedback" *ngIf="productForm.get('brand')?.errors?.['required']">
+                Brand is required
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="type" class="form-label">Type</label>
+              <input type="text" class="form-control" id="type" formControlName="type"
+                     [class.is-invalid]="productForm.get('type')?.invalid && productForm.get('type')?.touched">
+              <div class="invalid-feedback" *ngIf="productForm.get('type')?.errors?.['required']">
+                Type is required
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="stock" class="form-label">Stock</label>
+              <input type="number" class="form-control" id="stock" formControlName="stock"
+                     [class.is-invalid]="productForm.get('stock')?.invalid && productForm.get('stock')?.touched">
+              <div class="invalid-feedback" *ngIf="productForm.get('stock')?.errors?.['required']">
+                Stock is required
+              </div>
+              <div class="invalid-feedback" *ngIf="productForm.get('stock')?.errors?.['min']">
+                Stock must be greater than 0
+              </div>
+            </div>
+
+            <div class="d-flex justify-content-between">
+              <button type="button" class="btn btn-secondary" (click)="onCancel()">Cancel</button>
+              <button type="submit" class="btn btn-primary" [disabled]="productForm.invalid">
+                {{ isEditMode ? 'Update' : 'Create' }}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> 

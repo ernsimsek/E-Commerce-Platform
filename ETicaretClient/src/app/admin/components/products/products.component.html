@@ -1,0 +1,36 @@
+<div class="container-fluid p-2">
+  <div class="admin-panel">
+    <!-- Başlık -->
+    <div class="row mb-3">
+      <div class="col-12">
+        <div class="d-flex justify-content-between align-items-center">
+          <h2 class="text-primary m-0"><i class="fa-solid fa-boxes-stacked me-2"></i>Ürün Yönetimi</h2>
+          <button class="btn btn-sm btn-outline-primary" (click)="refreshProducts()">
+            <i class="fa-solid fa-sync-alt me-1"></i>Yenile
+          </button>
+        </div>
+        <hr class="mt-2 mb-0">
+      </div>
+    </div>
+
+    <div class="row">
+      <!-- Sol taraf: Ürün ekleme formu -->
+      <div class="col-lg-3">
+        <div class="card shadow-sm h-100">
+          <div class="card-header bg-primary text-white">
+            <h5 class="mb-0"><i class="fa-solid fa-plus me-2"></i>Ürün Ekle</h5>
+          </div>
+          <div class="card-body">
+            <app-create (createdProduct)="createdProduct($event)"></app-create>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sağ taraf: Ürün listesi -->
+      <div class="col-lg-9">
+        <app-list></app-list>
+      </div>
+    </div>
+  </div>
+</div>
+  
