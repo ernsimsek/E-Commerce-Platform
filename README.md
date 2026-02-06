@@ -109,8 +109,8 @@ E-Ticaret/
 ### Step 1: Clone the Repository
 
 ```bash
-git clone https://github.com/username/e-commerce.git
-cd e-commerce
+git clone https://github.com/ernsimsek/E-Commerce-Platform.git
+cd E-Commerce-Platform
 ```
 
 ### Step 2: Database Setup
