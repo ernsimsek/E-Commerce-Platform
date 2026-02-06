@@ -67,7 +67,7 @@ A modern, scalable, and full-featured e-commerce application built with Clean Ar
 - **SignalR Client** - Real-time communication
 - **Toastr** - Notifications
 
-## 📁 Project Structure
+##  Project Structure
 
 ```
 E-Ticaret/
@@ -193,7 +193,7 @@ ng serve
 The frontend will be available at:
 - `http://localhost:4200`
 
-## 📖 Usage
+##  Usage
 
 ### API Endpoints
 
@@ -230,7 +230,7 @@ The frontend will be available at:
 3. **Login/Register**: Create an account or sign in
 4. **Admin Panel**: Manage products and orders with admin privileges
 
-## 📚 API Documentation
+##  API Documentation
 
 API documentation is available through Swagger UI:
 
@@ -238,7 +238,7 @@ API documentation is available through Swagger UI:
 https://localhost:7136/swagger
 ```
 
-## 📝 License
+##  License
 
 This project is licensed under the MIT License - see the `LICENSE` file for details.
 
