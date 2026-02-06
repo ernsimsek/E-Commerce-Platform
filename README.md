@@ -10,8 +10,6 @@ A modern, scalable, and full-featured e-commerce application built with Clean Ar
 - [Installation](#-installation)
 - [Usage](#-usage)
 - [API Documentation](#-api-documentation)
-- [Screenshots](#-screenshots)
-- [Contributing](#-contributing)
 - [License](#-license)
 
 ##  Features
